@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuração de Agendas - IA Assistant</title>
     <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -21,7 +16,6 @@
             padding: 20px;
             line-height: 1.6;
         }
-        
         .container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -30,10 +24,9 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
-            max-width: 600px;
+            max-width: 650px; /* Aumentado para o novo formulário */
             width: 100%;
         }
-        
         h1 {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
@@ -42,59 +35,26 @@
             margin-bottom: 12px;
             font-size: 32px;
             font-weight: 700;
-            letter-spacing: -0.5px;
         }
-        
-        p.subtitle {
-            color: #64748b;
-            margin-bottom: 40px;
-            font-size: 16px;
-            font-weight: 400;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        
+        p.subtitle { color: #64748b; margin-bottom: 40px; font-size: 16px; }
+        .form-group, .input-group { margin-bottom: 20px; text-align: left; }
         .agenda-pair {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
+            background: #f8f9fa;
             border-radius: 12px;
             padding: 28px;
             margin-bottom: 24px;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
-        
-        .agenda-pair:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-        
-        .agenda-pair.error {
-            border-color: rgba(239, 68, 68, 0.5);
-            background: rgba(254, 242, 242, 0.9);
-        }
-        
+        .agenda-pair.error { border-color: #ef4444; }
         .agenda-pair h3 {
             color: #1e293b;
             font-size: 18px;
             margin-bottom: 24px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-        
-        .agenda-pair h3::before {
-            content: "📅";
-            font-size: 20px;
-        }
-        
         label {
             display: block;
             color: #374151;
@@ -102,478 +62,179 @@
             margin-bottom: 8px;
             font-size: 15px;
         }
-        
-        input[type="text"] {
+        input[type="text"], input[type="time"], input[type="number"] {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid rgba(226, 232, 240, 0.8);
+            border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 15px;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
+            background: white;
             color: #1f2937;
-            backdrop-filter: blur(5px);
         }
-        
-        input[type="text"]:focus {
+        input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            background: rgba(255, 255, 255, 1);
         }
-        
-        input[type="text"].error {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-        }
-        
-        input[type="text"]::placeholder {
-            color: #94a3b8;
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-        
-        .btn-primary { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            width: 100%; 
-            margin-top: 32px;
-            padding: 16px 20px;
-            font-weight: 600;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary { 
-            background: rgba(255, 255, 255, 0.8);
-            color: #667eea;
-            border: 2px dashed rgba(102, 126, 234, 0.3);
-            padding: 14px 24px;
-            margin: 24px auto;
-            display: block;
-            width: fit-content;
-            border-radius: 12px;
-            backdrop-filter: blur(5px);
-            font-weight: 500;
-        }
-        
-        .btn-danger { 
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            padding: 8px 16px; 
-            font-size: 13px;
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            min-width: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-        }
-        
-        .btn:hover:not(:disabled) { 
-            transform: translateY(-2px); 
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        }
-        
-        .btn-secondary:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.95);
-            border-color: rgba(102, 126, 234, 0.5);
-            color: #5a67d8;
-        }
-        
-        .btn-danger:hover:not(:disabled) {
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-        }
-        
-        .agendas-container {
-            margin-bottom: 20px;
-        }
-        
-        .loading-spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffffff3d;
-            border-top: 2px solid #ffffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .success-message {
-            display: none;
-            text-align: center;
-        }
-        
-        .success-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 32px;
-            color: white;
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-        }
-        
-        .error-message {
-            background: rgba(254, 242, 242, 0.9);
-            color: #dc2626;
-            padding: 14px 18px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-            text-align: center;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            font-size: 14px;
-            backdrop-filter: blur(5px);
-        }
-        
-        .form-container {
-            text-align: left;
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 32px 24px;
-                margin: 16px;
-                border-radius: 12px;
-            }
-            
-            h1 {
-                font-size: 28px;
-            }
-            
-            .agenda-pair {
-                padding: 20px;
-            }
-            
-            .btn-danger {
-                position: static;
-                margin-top: 16px;
-                width: auto;
-            }
-        }
+        input.error { border-color: #ef4444; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+        .checkbox-item { display: flex; align-items: center; background: #eef2ff; padding: 8px 12px; border-radius: 8px; }
+        .checkbox-item input { margin-right: 8px; }
+        .time-group { display: flex; gap: 20px; }
+        .time-group .input-group { flex: 1; }
+        .btn { display: inline-block; padding: 12px 20px; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 100%; margin-top: 32px; padding: 16px 20px; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #eef2ff; color: #667eea; border: 2px dashed #c7d2fe; margin: 24px auto; display: block; width: fit-content; }
+        .btn-danger { background: #fee2e2; color: #ef4444; padding: 8px 16px; font-size: 13px; position: absolute; top: 24px; right: 24px; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .success-message, .error-message { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Formulário Principal -->
         <div id="formContainer">
             <h1>Configuração de Agendas</h1>
-            <p class="subtitle">Configure as agendas do Google Calendar que serão gerenciadas pela IA</p>
-            
-            <form id="agendasForm" class="form-container">
-                <!-- Campo oculto para profileId -->
+            <p class="subtitle">Configure as agendas e regras de atendimento que serão gerenciadas pela IA.</p>
+            <form id="agendasForm">
                 <input type="hidden" id="profileId" name="profileId">
-                
-                <!-- Container para as agendas -->
-                <div class="agendas-container" id="agendasContainer">
-                    <!-- Primeira agenda (sempre presente) -->
-                    <div class="agenda-pair" data-index="0">
-                        <h3>Agenda 1</h3>
-                        <div class="input-group">
-                            <label for="friendlyName_0">Nome da agenda</label>
-                            <input type="text" id="friendlyName_0" name="friendlyName_0" placeholder="Ex: Agenda do João" required>
-                        </div>
-                        <div class="input-group">
-                            <label for="calendarId_0">ID do Google Calendar</label>
-                            <input type="text" id="calendarId_0" name="calendarId_0" placeholder="exemplo@group.calendar.google.com" required>
-                        </div>
+                <div id="agendasContainer">
                     </div>
-                </div>
-                
-                <!-- Botão para adicionar nova agenda -->
-                <button type="button" class="btn btn-secondary" id="addAgendaBtn">
-                    ✨ Adicionar agenda
-                </button>
-                
-                <!-- Mensagem de erro -->
+                <button type="button" class="btn btn-secondary" id="addAgendaBtn">✨ Adicionar Agenda</button>
                 <div class="error-message" id="errorMessage"></div>
-                
-                <!-- Botão de salvar -->
-                <button type="submit" class="btn btn-primary" id="saveBtn">
-                    <span class="loading-spinner" id="loadingSpinner"></span>
-                    <span id="saveText">Salvar Agendas</span>
-                </button>
+                <button type="submit" class="btn btn-primary" id="saveBtn">Salvar Agendas</button>
             </form>
         </div>
-        
-        <!-- Mensagem de sucesso -->
         <div class="success-message" id="successMessage">
-            <div class="success-icon">✓</div>
-            <h1>Configuração concluída</h1>
-            <p class="subtitle">Suas agendas foram configuradas com sucesso e já estão sendo gerenciadas pela IA.</p>
+             <h1>Configuração Concluída!</h1>
+             <p class="subtitle">Suas agendas foram salvas com sucesso.</p>
         </div>
     </div>
 
     <script>
-        // Contador para controle das agendas adicionadas
-        let agendaCounter = 1;
-        
-        // Função para capturar o profile_id da URL (formato correto)
+        let agendaCounter = 0;
+
         function getProfileIdFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const profileId = urlParams.get('profile_id'); // Mudança: profile_id em vez de profileId
-            
+            const profileId = new URLSearchParams(window.location.search).get('profileId');
             if (profileId) {
                 document.getElementById('profileId').value = profileId;
-                console.log('Profile_id capturado:', profileId);
-            } else {
-                console.warn('Profile_id não encontrado na URL');
             }
-            
-            return profileId;
         }
         
-        // Função para adicionar uma nova agenda
-        function addNewAgenda() {
-            const container = document.getElementById('agendasContainer');
-            
-            // Criar o HTML para a nova agenda
-            const newAgendaHTML = `
-                <div class="agenda-pair" data-index="${agendaCounter}">
-                    <h3>Agenda ${agendaCounter + 1}</h3>
-                    <button type="button" class="btn btn-danger" onclick="removeAgenda(${agendaCounter})">
-                        Remover
-                    </button>
+        function createAgendaHTML(index) {
+            return `
+                <div class="agenda-pair" data-index="${index}">
+                    <h3>Agenda ${index + 1}</h3>
+                    <button type="button" class="btn btn-danger" onclick="removeAgenda(${index})">Remover</button>
                     <div class="input-group">
-                        <label for="friendlyName_${agendaCounter}">Nome da agenda</label>
-                        <input type="text" id="friendlyName_${agendaCounter}" name="friendlyName_${agendaCounter}" placeholder="Ex: Agenda da Maria" required>
+                        <label for="friendlyName_${index}">Nome da Agenda (Ex: João, Suporte)</label>
+                        <input type="text" id="friendlyName_${index}" required>
                     </div>
                     <div class="input-group">
-                        <label for="calendarId_${agendaCounter}">ID do Google Calendar</label>
-                        <input type="text" id="calendarId_${agendaCounter}" name="calendarId_${agendaCounter}" placeholder="exemplo@group.calendar.google.com" required>
+                        <label for="calendarId_${index}">ID do Google Calendar</label>
+                        <input type="text" id="calendarId_${index}" placeholder="id_da_agenda@group.calendar.google.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dias Para Agendar</label>
+                        <div class="checkbox-group" id="dias_para_agendar_${index}">
+                            <div class="checkbox-item"><input type="checkbox" value="seg" name="dias_${index}"> Segunda</div>
+                            <div class="checkbox-item"><input type="checkbox" value="ter" name="dias_${index}"> Terça</div>
+                            <div class="checkbox-item"><input type="checkbox" value="qua" name="dias_${index}"> Quarta</div>
+                            <div class="checkbox-item"><input type="checkbox" value="qui" name="dias_${index}"> Quinta</div>
+                            <div class="checkbox-item"><input type="checkbox" value="sex" name="dias_${index}"> Sexta</div>
+                            <div class="checkbox-item"><input type="checkbox" value="sab" name="dias_${index}"> Sábado</div>
+                            <div class="checkbox-item"><input type="checkbox" value="dom" name="dias_${index}"> Domingo</div>
+                        </div>
+                    </div>
+                    <div class="time-group">
+                        <div class="input-group">
+                            <label for="horario_inicio_${index}">Horário de Início</label>
+                            <input type="time" id="horario_inicio_${index}" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="horario_fim_${index}">Horário de Fim</label>
+                            <input type="time" id="horario_fim_${index}" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="duracao_media_agendamento_${index}">Duração Média (em minutos)</label>
+                        <input type="number" id="duracao_media_agendamento_${index}" value="30" required>
                     </div>
                 </div>
             `;
-            
-            // Adicionar o HTML ao container
-            container.insertAdjacentHTML('beforeend', newAgendaHTML);
+        }
+
+        function addNewAgenda() {
+            const container = document.getElementById('agendasContainer');
+            container.insertAdjacentHTML('beforeend', createAgendaHTML(agendaCounter));
             agendaCounter++;
         }
-        
-        // Função para remover uma agenda
+
         function removeAgenda(index) {
             const agendaElement = document.querySelector(`[data-index="${index}"]`);
-            if (agendaElement) {
-                agendaElement.remove();
-                updateAgendaNumbers();
-            }
+            if (agendaElement) agendaElement.remove();
+            updateAgendaNumbers();
         }
-        
-        // Função para atualizar a numeração das agendas após remoção
+
         function updateAgendaNumbers() {
-            const agendaPairs = document.querySelectorAll('.agenda-pair');
-            agendaPairs.forEach((pair, index) => {
-                const title = pair.querySelector('h3');
-                title.textContent = `Agenda ${index + 1}`;
+            document.querySelectorAll('.agenda-pair').forEach((pair, index) => {
+                pair.querySelector('h3').textContent = `Agenda ${index + 1}`;
             });
         }
         
-        // Função de validação dos campos
-        function validateForm() {
-            const agendaPairs = document.querySelectorAll('.agenda-pair');
-            let isValid = true;
-            
-            // Limpar erros anteriores
-            document.querySelectorAll('.error').forEach(el => {
-                el.classList.remove('error');
-            });
-            
-            agendaPairs.forEach(pair => {
-                const inputs = pair.querySelectorAll('input[type="text"]');
-                let pairHasError = false;
-                
-                inputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        input.classList.add('error');
-                        pairHasError = true;
-                        isValid = false;
-                    }
-                });
-                
-                if (pairHasError) {
-                    pair.classList.add('error');
-                }
-            });
-            
-            return isValid;
-        }
-        
-        // Função para coletar dados do formulário
         function collectFormData() {
-            const profileId = document.getElementById('profileId').value;
-            const agendaPairs = document.querySelectorAll('.agenda-pair');
             const agendas = [];
-            
-            agendaPairs.forEach(pair => {
+            document.querySelectorAll('.agenda-pair').forEach(pair => {
                 const index = pair.getAttribute('data-index');
-                const friendlyName = document.getElementById(`friendlyName_${index}`).value.trim();
-                const calendarId = document.getElementById(`calendarId_${index}`).value.trim();
-                
-                if (friendlyName && calendarId) {
-                    agendas.push({
-                        friendly_name: friendlyName,
-                        calendar_id: calendarId
-                    });
-                }
+                const dias = Array.from(document.querySelectorAll(`input[name="dias_${index}"]:checked`)).map(cb => cb.value);
+
+                agendas.push({
+                    friendly_name: document.getElementById(`friendlyName_${index}`).value.trim(),
+                    calendar_id: document.getElementById(`calendarId_${index}`).value.trim(),
+                    dias_para_agendar: dias,
+                    horario_inicio: document.getElementById(`horario_inicio_${index}`).value,
+                    horario_fim: document.getElementById(`horario_fim_${index}`).value,
+                    duracao_media_agendamento: parseInt(document.getElementById(`duracao_media_agendamento_${index}`).value, 10)
+                });
             });
-            
             return {
-                profileId: profileId,
+                profileId: document.getElementById('profileId').value,
                 agendas: agendas
             };
         }
         
-        // Função para enviar dados para o webhook
-        async function submitFormData(data) {
-            const response = await fetch('https://n8n.fflow.site/webhook/agendas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Erro na requisição: ${response.status}`);
-            }
-            
-            return response.json();
-        }
-        
-        // Função para mostrar estado de carregamento
-        function setLoadingState(isLoading) {
-            const saveBtn = document.getElementById('saveBtn');
-            const spinner = document.getElementById('loadingSpinner');
-            const saveText = document.getElementById('saveText');
-            
-            if (isLoading) {
-                saveBtn.disabled = true;
-                spinner.style.display = 'inline-block';
-                saveText.textContent = 'Salvando...';
-            } else {
-                saveBtn.disabled = false;
-                spinner.style.display = 'none';
-                saveText.textContent = 'Salvar Agendas';
-            }
-        }
-        
-        // Função para mostrar mensagem de erro
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            
-            // Esconder após 5 segundos
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
-        }
-        
-        // Função para mostrar mensagem de sucesso
-        function showSuccess() {
-            document.getElementById('formContainer').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'block';
-        }
-        
-        // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Capturar profileId da URL ao carregar a página
             getProfileIdFromURL();
-            
-            // Event listener para adicionar nova agenda
+            addNewAgenda(); // Adiciona o primeiro bloco de agenda ao carregar
+
             document.getElementById('addAgendaBtn').addEventListener('click', addNewAgenda);
             
-            // Event listener para submissão do formulário
             document.getElementById('agendasForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
-                // Esconder mensagem de erro anterior
-                document.getElementById('errorMessage').style.display = 'none';
-                
-                // Validar formulário
-                if (!validateForm()) {
-                    showError('Por favor, preencha todos os campos obrigatórios.');
+                // Simples validação para o exemplo
+                const formData = collectFormData();
+                if (!formData.profileId || formData.agendas.length === 0) {
+                    alert('Erro: ID do Perfil está faltando ou nenhuma agenda foi adicionada.');
                     return;
                 }
-                
-                // Verificar se há profileId
-                const profileId = document.getElementById('profileId').value;
-                if (!profileId) {
-                    showError('Profile ID não encontrado. Verifique se a URL está correta.');
-                    return;
-                }
+
+                document.getElementById('saveBtn').disabled = true;
                 
                 try {
-                    // Mostrar estado de carregamento
-                    setLoadingState(true);
+                    const response = await fetch('https://n8n.fflow.site/webhook/agendas', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    if (!response.ok) throw new Error('Falha na requisição');
                     
-                    // Coletar dados do formulário
-                    const formData = collectFormData();
-                    console.log('Dados coletados:', formData);
-                    
-                    // Enviar dados para o webhook
-                    await submitFormData(formData);
-                    
-                    // Mostrar mensagem de sucesso
-                    showSuccess();
-                    
+                    document.getElementById('formContainer').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+
                 } catch (error) {
-                    console.error('Erro ao salvar agendas:', error);
-                    showError('Ocorreu um erro ao salvar as agendas. Tente novamente.');
-                } finally {
-                    // Remover estado de carregamento
-                    setLoadingState(false);
-                }
-            });
-            
-            // Remover classes de erro quando o usuário começar a digitar
-            document.addEventListener('input', function(e) {
-                if (e.target.type === 'text') {
-                    e.target.classList.remove('error');
-                    const pair = e.target.closest('.agenda-pair');
-                    if (pair) {
-                        const hasEmptyInputs = Array.from(pair.querySelectorAll('input[type="text"]'))
-                            .some(input => !input.value.trim());
-                        if (!hasEmptyInputs) {
-                            pair.classList.remove('error');
-                        }
-                    }
+                    alert('Ocorreu um erro ao salvar. Tente novamente.');
+                    document.getElementById('saveBtn').disabled = false;
                 }
             });
         });
