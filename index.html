@@ -60,6 +60,37 @@
         .checkbox-item input { margin-right: 8px; }
         .time-group { display: flex; gap: 20px; }
         .time-group .input-group { flex: 1; }
+        .rest-section {
+            background: #fef3c7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #fcd34d;
+        }
+        .rest-section h4 {
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .rest-section h4:before {
+            content: "☕";
+            margin-right: 8px;
+        }
+        .rest-toggle {
+            margin-bottom: 15px;
+        }
+        .rest-toggle input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        .rest-times {
+            display: none;
+        }
+        .rest-times.active {
+            display: block;
+        }
         .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; text-decoration: none; transition: all 0.2s ease; cursor: pointer; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 100%; margin-top: 20px; padding: 16px; font-weight: 600; border-radius: 12px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
@@ -144,11 +175,46 @@
                         <div class="input-group"><label for="horario_inicio_${index}">Horário de Início</label><input type="time" id="horario_inicio_${index}" required></div>
                         <div class="input-group"><label for="horario_fim_${index}">Horário de Fim</label><input type="time" id="horario_fim_${index}" required></div>
                     </div>
+                    
+                    <div class="rest-section">
+                        <h4>Horário de Descanso/Almoço</h4>
+                        <div class="rest-toggle">
+                            <label>
+                                <input type="checkbox" id="has_rest_${index}" onchange="toggleRestTimes(${index})">
+                                Possui horário de descanso
+                            </label>
+                        </div>
+                        <div class="rest-times" id="rest_times_${index}">
+                            <div class="time-group">
+                                <div class="input-group">
+                                    <label for="descanso_inicio_${index}">Início do Descanso</label>
+                                    <input type="time" id="descanso_inicio_${index}">
+                                </div>
+                                <div class="input-group">
+                                    <label for="descanso_fim_${index}">Fim do Descanso</label>
+                                    <input type="time" id="descanso_fim_${index}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="input-group">
                         <label for="duracao_media_agendamento_${index}">Duração Média dos Atendimentos (em minutos)</label>
                         <input type="number" id="duracao_media_agendamento_${index}" value="30" required>
                     </div>
                 </div>`;
+
+            window.toggleRestTimes = (index) => {
+                const checkbox = document.getElementById(`has_rest_${index}`);
+                const restTimes = document.getElementById(`rest_times_${index}`);
+                restTimes.classList.toggle('active', checkbox.checked);
+                
+                // Limpar campos quando desabilitado
+                if (!checkbox.checked) {
+                    document.getElementById(`descanso_inicio_${index}`).value = '';
+                    document.getElementById(`descanso_fim_${index}`).value = '';
+                }
+            };
 
             const addNewAgenda = () => {
                 container.insertAdjacentHTML('beforeend', createAgendaHTML(agendaCounter));
@@ -170,6 +236,8 @@
                 let isValid = true;
                 document.querySelectorAll('.agenda-pair').forEach(pair => {
                     let pairHasError = false;
+                    
+                    // Validar campos obrigatórios
                     pair.querySelectorAll('input[required]').forEach(input => {
                         if (!input.value.trim()) {
                             input.classList.add('error');
@@ -179,6 +247,25 @@
                             input.classList.remove('error');
                         }
                     });
+                    
+                    // Validar horário de descanso se ativado
+                    const index = pair.dataset.index;
+                    const hasRest = document.getElementById(`has_rest_${index}`).checked;
+                    if (hasRest) {
+                        const descansoInicio = document.getElementById(`descanso_inicio_${index}`);
+                        const descansoFim = document.getElementById(`descanso_fim_${index}`);
+                        
+                        if (!descansoInicio.value || !descansoFim.value) {
+                            descansoInicio.classList.add('error');
+                            descansoFim.classList.add('error');
+                            isValid = false;
+                            pairHasError = true;
+                        } else {
+                            descansoInicio.classList.remove('error');
+                            descansoFim.classList.remove('error');
+                        }
+                    }
+                    
                     pair.classList.toggle('error', pairHasError);
                 });
                 return isValid;
@@ -188,16 +275,30 @@
                 const agendas = [];
                 document.querySelectorAll('.agenda-pair').forEach(pair => {
                     const index = pair.dataset.index;
-                    const dias = Array.from(pair.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-                    agendas.push({
+                    const dias = Array.from(pair.querySelectorAll('input[type="checkbox"]:checked'))
+                        .filter(cb => cb.value !== 'on') // Filtrar checkbox de descanso
+                        .map(cb => cb.value);
+                    
+                    const hasRest = document.getElementById(`has_rest_${index}`).checked;
+                    const agendaData = {
                         friendly_name: document.getElementById(`friendlyName_${index}`).value.trim(),
                         calendar_id: document.getElementById(`calendarId_${index}`).value.trim(),
                         dias_para_agendar: dias,
                         horario_inicio: document.getElementById(`horario_inicio_${index}`).value,
                         horario_fim: document.getElementById(`horario_fim_${index}`).value,
-                        duracao_media_agendamento: parseInt(document.getElementById(`duracao_media_agendamento_${index}`).value, 10)
-                    });
+                        duracao_media_agendamento: parseInt(document.getElementById(`duracao_media_agendamento_${index}`).value, 10),
+                        tem_descanso: hasRest
+                    };
+                    
+                    // Adicionar horários de descanso se ativado
+                    if (hasRest) {
+                        agendaData.descanso_inicio = document.getElementById(`descanso_inicio_${index}`).value;
+                        agendaData.descanso_fim = document.getElementById(`descanso_fim_${index}`).value;
+                    }
+                    
+                    agendas.push(agendaData);
                 });
+                
                 return {
                     profileId: document.getElementById('profileId').value,
                     agendas: agendas
